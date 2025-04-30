@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ScreenSound.API.Requests;
+using ScreenSound.API.Responses;
 using ScreenSound.Banco;
 using ScreenSound.Modelos;
 using ScreenSound.Shared.Modelos.Modelos;
@@ -19,14 +20,14 @@ public static class GeneroExtensions
 
         app.MapGet("/Generos/{nome}", ([FromServices] DAL<Genero> dal, string nome) =>
         {
-            var musica = dal.RecuperarPor(m => m.Nome.ToUpper().Equals(nome.ToUpper()));
+            var genero = dal.RecuperarPor(m => m.Nome.ToUpper().Equals(nome.ToUpper()));
 
-            if (musica is null)
+            if (genero is null)
             {
                 return Results.NotFound();
             }
-
-            return Results.Ok(musica);
+            var response = EntityToResponse(genero!);
+            return Results.Ok(response);
         });
 
         app.MapPost("/Generos", ([FromServices] DAL<Genero> dal, [FromBody] GeneroRequest generoRequest) =>
